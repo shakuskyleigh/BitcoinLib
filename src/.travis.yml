@@ -1,5 +1,6 @@
 language: csharp
 solution: BitcoinLib.sln
+sudo: required
 
 matrix:
   include:
@@ -7,3 +8,8 @@ matrix:
       mono: none
       dist: trusty
     - mono: latest
+
+script:
+ - cd ./BitcoinLib
+ - dotnet restore
+ - dotnet build
