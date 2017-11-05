@@ -46,9 +46,8 @@ namespace BitcoinLib.Services
                 }
                 else
                 {
-                    short rpcRequestTimeoutTryParse = 0;
 
-                    if (short.TryParse(ConfigurationManager.AppSettings.Get("RpcRequestTimeoutInSeconds"), out rpcRequestTimeoutTryParse))
+                    if (short.TryParse(ConfigurationManager.AppSettings.Get("RpcRequestTimeoutInSeconds"), out short rpcRequestTimeoutTryParse))
                     {
                         RpcRequestTimeoutInSeconds = rpcRequestTimeoutTryParse;
                     }

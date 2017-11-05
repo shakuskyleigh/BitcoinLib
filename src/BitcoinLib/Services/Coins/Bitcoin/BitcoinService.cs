@@ -21,6 +21,11 @@ namespace BitcoinLib.Services.Coins.Bitcoin
         {
         }
 
+        public BitcoinService(bool useTestNet, string daemonUrl, string rpcUsername, string rpcPassword, string walletPassword, short rpcRequestTimeoutInSeconds)
+    : base(useTestNet, daemonUrl, rpcUsername, rpcPassword, walletPassword, rpcRequestTimeoutInSeconds)
+        {
+        }
+
         public BitcoinConstants.Constants Constants => BitcoinConstants.Constants.Instance;
     }
 }

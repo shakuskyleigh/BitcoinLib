@@ -4,26 +4,27 @@
 using System.Collections.Generic;
 using BitcoinLib.Requests.CreateRawTransaction;
 using BitcoinLib.Responses;
+using System.Threading.Tasks;
 
 namespace BitcoinLib.Services.RpcServices.RpcExtenderService
 {
     public interface IRpcExtenderService
     {
-        decimal GetAddressBalance(string inWalletAddress, int minConf = 0, bool validateAddressBeforeProcessing = true);
-        decimal GetMinimumNonZeroTransactionFeeEstimate(short numberOfInputs = 1, short numberOfOutputs = 1);
-        Dictionary<string, string> GetMyPublicAndPrivateKeyPairs();
-        DecodeRawTransactionResponse GetPublicTransaction(string txId);
-        decimal GetTransactionFee(CreateRawTransactionRequest createRawTransactionRequest, bool checkIfTransactionQualifiesForFreeRelay = true, bool enforceMinimumTransactionFeePolicy = true);
-        decimal GetTransactionPriority(CreateRawTransactionRequest createRawTransactionRequest);
+        Task<decimal> GetAddressBalanceAsync(string inWalletAddress, int minConf = 0, bool validateAddressBeforeProcessing = true);
+        Task<decimal> GetMinimumNonZeroTransactionFeeEstimateAsync(short numberOfInputs = 1, short numberOfOutputs = 1);
+        Task<Dictionary<string, string>> GetMyPublicAndPrivateKeyPairsAsync();
+        Task<DecodeRawTransactionResponse> GetPublicTransactionAsync(string txId);
+        Task<decimal> GetTransactionFeeAsync(CreateRawTransactionRequest createRawTransactionRequest, bool checkIfTransactionQualifiesForFreeRelay = true, bool enforceMinimumTransactionFeePolicy = true);
+        Task<decimal> GetTransactionPriorityAsync(CreateRawTransactionRequest createRawTransactionRequest);
         decimal GetTransactionPriority(IList<ListUnspentResponse> transactionInputs, int numberOfOutputs);
-        string GetTransactionSenderAddress(string txId);
+        Task<string> GetTransactionSenderAddressAsync(string txId);
         int GetTransactionSizeInBytes(CreateRawTransactionRequest createRawTransactionRequest);
         int GetTransactionSizeInBytes(int numberOfInputs, int numberOfOutputs);
-        GetRawTransactionResponse GetRawTxFromImmutableTxId(string rigidTxId, int listTransactionsCount = int.MaxValue, int listTransactionsFrom = 0, bool getRawTransactionVersbose = true, bool rigidTxIdIsSha256 = false);
-        string GetImmutableTxId(string txId, bool getSha256Hash = false);
-        bool IsInWalletTransaction(string txId);
-        bool IsTransactionFree(CreateRawTransactionRequest createRawTransactionRequest);
+        Task<GetRawTransactionResponse> GetRawTxFromImmutableTxId(string rigidTxId, int listTransactionsCount = int.MaxValue, int listTransactionsFrom = 0, bool getRawTransactionVersbose = true, bool rigidTxIdIsSha256 = false);
+        Task<string> GetImmutableTxIdAsync(string txId, bool getSha256Hash = false);
+        Task<bool> IsInWalletTransactionAsync(string txId);
+        Task<bool> IsTransactionFreeAsync(CreateRawTransactionRequest createRawTransactionRequest);
         bool IsTransactionFree(IList<ListUnspentResponse> transactionInputs, int numberOfOutputs, decimal minimumAmountAmongOutputs);
-        bool IsWalletEncrypted();
+        Task<bool> IsWalletEncryptedAsync();
     }
 }

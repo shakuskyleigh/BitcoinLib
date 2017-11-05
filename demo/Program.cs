@@ -12,33 +12,40 @@ using BitcoinLib.ExceptionHandling.Rpc;
 using BitcoinLib.Responses;
 using BitcoinLib.Services.Coins.Base;
 using BitcoinLib.Services.Coins.Bitcoin;
+using System.Threading.Tasks;
 
 namespace ConsoleClient
 {
     internal sealed class Program
     {
         private static readonly ICoinService CoinService = new BitcoinService(useTestnet: true);
+        static void Main(string[] args)
+        {
+            Task t = Mains();
+            t.Wait();
+        }
 
-        private static void Main()
+        private async static Task Mains()
         {
             try
             {
                 Console.Write("\n\nConnecting to {0} {1}Net via RPC at {2}...", CoinService.Parameters.CoinLongName, (CoinService.Parameters.UseTestnet ? "Test" : "Main"), CoinService.Parameters.SelectedDaemonUrl);
 
                 //  Network difficulty
-                var networkDifficulty = CoinService.GetDifficulty();
+                var networkDifficulty = await CoinService.GetDifficultyAsync();
                 Console.WriteLine("[OK]\n\n{0} Network Difficulty: {1}", CoinService.Parameters.CoinLongName, networkDifficulty.ToString("#,###", CultureInfo.InvariantCulture));
 
                 //  My balance
-                var myBalance = CoinService.GetBalance();
+                var myBalance = await CoinService.GetBalanceAsync();
                 Console.WriteLine("\nMy balance: {0} {1}", myBalance, CoinService.Parameters.CoinShortName);
 
                 //  Current block
+                var currentBlock = await CoinService.GetBlockCountAsync();
                 Console.WriteLine("Current block: {0}",
-                    CoinService.GetBlockCount().ToString("#,#", CultureInfo.InvariantCulture));
+                    currentBlock.ToString("#,#", CultureInfo.InvariantCulture));
 
                 //  Wallet state
-                Console.WriteLine("Wallet state: {0}", CoinService.IsWalletEncrypted() ? "Encrypted" : "Unencrypted");
+                Console.WriteLine("Wallet state: {0}", await CoinService.IsWalletEncryptedAsync() ? "Encrypted" : "Unencrypted");
 
                 //  Keys and addresses
                 if (myBalance > 0)
@@ -46,7 +53,7 @@ namespace ConsoleClient
                     //  My non-empty addresses
                     Console.WriteLine("\n\nMy non-empty addresses:");
 
-                    var myNonEmptyAddresses = CoinService.ListReceivedByAddress();
+                    var myNonEmptyAddresses = await CoinService.ListReceivedByAddressAsync();
 
                     foreach (var address in myNonEmptyAddresses)
                     {
@@ -59,27 +66,27 @@ namespace ConsoleClient
                     }
 
                     //  My private keys
-                    if (bool.Parse(ConfigurationManager.AppSettings["ExtractMyPrivateKeys"]) && myNonEmptyAddresses.Count > 0 && CoinService.IsWalletEncrypted())
+                    if (bool.Parse(ConfigurationManager.AppSettings["ExtractMyPrivateKeys"]) && myNonEmptyAddresses.Count > 0 && await CoinService.IsWalletEncryptedAsync())
                     {
                         const short secondsToUnlockTheWallet = 30;
 
                         Console.Write("\nWill now unlock the wallet for " + secondsToUnlockTheWallet + ((secondsToUnlockTheWallet > 1) ? " seconds" : " second") + "...");
-                        CoinService.WalletPassphrase(CoinService.Parameters.WalletPassword, secondsToUnlockTheWallet);
+                        await CoinService.WalletPassphraseAsync(CoinService.Parameters.WalletPassword, secondsToUnlockTheWallet);
                         Console.WriteLine("[OK]\n\nMy private keys for non-empty addresses:\n");
 
                         foreach (var address in myNonEmptyAddresses)
                         {
-                            Console.WriteLine("Private Key for address " + address.Address + ": " + CoinService.DumpPrivKey(address.Address));
+                            Console.WriteLine("Private Key for address " + address.Address + ": " + await CoinService.DumpPrivKeyAsync(address.Address));
                         }
 
                         Console.Write("\nLocking wallet...");
-                        CoinService.WalletLock();
+                        await CoinService.WalletLockAsync();
                         Console.WriteLine("[OK]");
                     }
 
                     //  My transactions 
                     Console.WriteLine("\n\nMy transactions: ");
-                    var myTransactions = CoinService.ListTransactions(null, int.MaxValue, 0);
+                    var myTransactions = await CoinService.ListTransactionsAsync(null, int.MaxValue, 0);
 
                     foreach (var transaction in myTransactions)
                     {
@@ -126,7 +133,7 @@ namespace ConsoleClient
                     Console.WriteLine("\n\nMy transactions' details:");
                     foreach (var transaction in myTransactions)
                     {
-                        var localWalletTransaction = CoinService.GetTransaction(transaction.TxId);
+                        var localWalletTransaction = await CoinService.GetTransactionAsync(transaction.TxId);
                         IEnumerable<PropertyInfo> localWalletTrasactionProperties = localWalletTransaction.GetType().GetProperties();
                         IList<GetTransactionResponseDetails> localWalletTransactionDetailsList = localWalletTransaction.Details.ToList();
 
@@ -156,7 +163,7 @@ namespace ConsoleClient
 
                     //  Unspent transactions
                     Console.WriteLine("\nMy unspent transactions:");
-                    var unspentList = CoinService.ListUnspent();
+                    var unspentList = await CoinService.ListUnspentAsync();
 
                     foreach (var unspentResponse in unspentList)
                     {

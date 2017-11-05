@@ -6,6 +6,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using BitcoinLib.Services.Coins.Base;
+using System.Threading.Tasks;
 
 namespace BitcoinLib.RPC.Connector
 {
@@ -13,7 +14,7 @@ namespace BitcoinLib.RPC.Connector
     public static class RawRpcConnector
     {
         //  Usage example:  String networkDifficultyJsonResult = RawRpcConnector.MakeRequest("{\"method\":\"getdifficulty\",\"params\":[],\"id\":1}", "http://127.0.0.1:8332/", "MyRpcUsername", "MyRpcPassword");
-        public static string MakeRequest(string jsonRequest, string daemonUrl, string rpcUsername, string rpcPassword)
+        public  async static Task<string> MakeRequest(string jsonRequest, string daemonUrl, string rpcUsername, string rpcPassword)
         {
             try
             {
@@ -27,12 +28,12 @@ namespace BitcoinLib.RPC.Connector
                 postReq.CookieContainer = tempCookies;
                 postReq.ContentType = "application/json";
                 postReq.ContentLength = byteData.Length;
-                var postreqstream = postReq.GetRequestStream();
+                var postreqstream = await postReq.GetRequestStreamAsync();
                 postreqstream.Write(byteData, 0, byteData.Length);
                 postreqstream.Close();
-                var postresponse = (HttpWebResponse) postReq.GetResponse();
+                var postresponse =  (HttpWebResponse)await postReq.GetResponseAsync();
                 var postreqreader = new StreamReader(postresponse.GetResponseStream());
-                return postreqreader.ReadToEnd();
+                return await postreqreader.ReadToEndAsync();
             }
             catch (Exception exception)
             {
@@ -41,9 +42,9 @@ namespace BitcoinLib.RPC.Connector
         }
 
         //  Usage example:  String networkDifficultyJsonResult = RawRpcConnector.MakeRequest("{\"method\":\"getdifficulty\",\"params\":[],\"id\":1}", new BitcoinService());
-        public static string MakeRequest(string jsonRequest, ICoinService coinService)
+        public async static Task<string> MakeRequest(string jsonRequest, ICoinService coinService)
         {
-            return MakeRequest(jsonRequest, coinService.Parameters.SelectedDaemonUrl, coinService.Parameters.RpcUsername, coinService.Parameters.RpcPassword);
+            return await MakeRequest(jsonRequest, coinService.Parameters.SelectedDaemonUrl, coinService.Parameters.RpcUsername, coinService.Parameters.RpcPassword);
         }
     }
 }
