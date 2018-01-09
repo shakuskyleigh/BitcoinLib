@@ -1,18 +1,17 @@
 ﻿BitcoinLib [![Build Status](https://travis-ci.org/GeorgeKimionis/BitcoinLib.svg?branch=master)](https://travis-ci.org/GeorgeKimionis/BitcoinLib)
 ==========
 
-**.Net Bitcoin & Altcoins Library & RPC Wrapper in C#**
+**.Net & .Net Core Bitcoin & Altcoins Library & RPC Wrapper in C#**
 
 Features
 --------
 
 - Fully compatible and up-to-date with [Bitcoin Core 0.11.2](https://bitcoin.org/en/download) RPC API.
-- Available on [NuGet](https://www.nuget.org/packages/BitcoinLib/).
 - Design-by-contract, service-oriented architecture.
 - Strongly-typed structures for complex RPC requests and responses.
 - Implicit JSON casting for all RPC messages.
 - Extended methods for every-day scenarios where the built-in methods fall short.
-- Exposure of all [RPC API's functionality](https://en.bitcoin.it/wiki/Original_Bitcoin_client/API_calls_list) as well as the extended methods through a single interface.
+- Exposure of all [RPC API's functionality](https://bitcoin.org/en/developer-reference#bitcoin-core-apis) as well as the extended methods through a single interface.
 - Custom RPC exceptions.
 - Supports all Bitcoin clones.
 - Can operate on unlimited daemons with a single library reference.
@@ -23,6 +22,8 @@ Features
 - Handles and relays RPC internal server errors along with their error code.
 - Can work without a `.config` file.
 - Fully compatible with [Mono](http://www.mono-project.com/).
+- Added Support for .Net Core
+- Fully Asynchronous
 - [Test Network (testnet)](https://bitcoin.org/en/developer-examples#testnet) and [Regression Test Mode (regtest)](https://bitcoin.org/en/developer-examples#regtest-mode) ready.
 - Fully configurable.
 
