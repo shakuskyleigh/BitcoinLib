@@ -13,6 +13,7 @@ using BitcoinLib.Services.Coins.Litecoin;
 using BitcoinLib.Services.Coins.Sarcoin;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using BitcoinLibNetCore.Services.Coins.Bitcoin_Cash;
 
 namespace BitcoinLib.Services
 {
@@ -272,6 +273,45 @@ namespace BitcoinLib.Services
                     IsoCurrencyCode = "XXX";
 
                     //  Note: The rest of the parameters will have to be defined at run-time
+                }
+
+                #endregion
+
+                #region Bitcoin Cash
+
+                else if (coinService is BitcoinCashService)
+                {
+                    if (!IgnoreConfigFiles)
+                    {
+                        DaemonUrl = Configuration["BitCoinCashSettings:BitcoinCash_DaemonUrl"];
+                        DaemonUrlTestnet = Configuration["BitCoinCashSettings:BitcoinCash_DaemonUrl_Testnet"];
+                        RpcUsername = Configuration["BitCoinCashSettings:BitcoinCash_RpcUsername"];
+                        RpcPassword = Configuration["BitCoinCashSettings:BitcoinCash_RpcPassword"];
+                        WalletPassword = Configuration["BitCoinCashSettings:BitcoinCash_WalletPassword"];
+                    }
+
+                    CoinShortName = "BCH";
+                    CoinLongName = "Bitcoin Cash";
+                    IsoCurrencyCode = "BCH";
+
+                    TransactionSizeBytesContributedByEachInput = 148;
+                    TransactionSizeBytesContributedByEachOutput = 34;
+                    TransactionSizeFixedExtraSizeInBytes = 10;
+
+                    FreeTransactionMaximumSizeInBytes = 1000;
+                    FreeTransactionMinimumOutputAmountInCoins = 0.01M;
+                    FreeTransactionMinimumPriority = 57600000;
+                    FeePerThousandBytesInCoins = 0.0001M;
+                    MinimumTransactionFeeInCoins = 0.0001M;
+                    MinimumNonDustTransactionAmountInCoins = 0.0000543M;
+
+                    TotalCoinSupplyInCoins = 21000000;
+                    EstimatedBlockGenerationTimeInMinutes = 10;
+                    BlocksHighestPriorityTransactionsReservedSizeInBytes = 50000;
+
+                    BaseUnitName = "Satoshi";
+                    BaseUnitsPerCoin = 100000000;
+                    CoinsPerBaseUnit = 0.00000001M;
                 }
 
                 #endregion
