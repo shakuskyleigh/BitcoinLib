@@ -24,5 +24,8 @@ namespace BitcoinLib.Responses
         public string Comment { get; set; }
         public string OtherAccount { get; set; }
         public bool InvolvesWatchonly { get; set; }
+        public bool Abandoned { get; set; }
+        public string Label { get; set; }
+        //public string Bip125_replaceable { get; set; }
     }
 }

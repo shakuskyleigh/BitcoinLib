@@ -13,7 +13,6 @@ namespace BitcoinLib.Responses
         public int GenProcLimit { get; set; }
         public long NetworkHashPS { get; set; }
         public int PooledTx { get; set; }
-        public bool Testnet { get; set; }
         public string Chain { get; set; }
         public bool Generate { get; set; }
         public long HashesPerSec { get; set; }
